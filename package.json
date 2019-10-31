@@ -8,12 +8,14 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm -rf build && rm -rf dist"
+    "clean": "rm -rf build && rm -rf dist",
+    "build:gopkg": "solc @aragon=$(pwd)/node_modules/@aragon --abi contracts/Token.sol -o build --overwrite && abigen --abi=./build/Token.abi --pkg=token --out=go/Token.go && solc @aragon=$(pwd)/node_modules/@aragon --bin contracts/Token.sol -o build --overwrite && abigen --bin=./build/Token.bin --abi=./build/Token.abi --pkg=token --out=go/Token.go"
   },
   "author": "",
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@aragon/os": "^4.3.0",
-		"@aragon/apps-shared-minime": "^1.0.2"
+		"@aragon/apps-shared-minime": "^1.0.2",
+		"@aragon/cli": "^6.3.3"
   }
 }
