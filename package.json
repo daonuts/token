@@ -1,0 +1,19 @@
+{
+  "name": "@daonuts/token",
+  "version": "0.0.1",
+  "description": "",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf build && rm -rf dist"
+  },
+  "author": "",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "@aragon/os": "^4.3.0",
+		"@aragon/apps-shared-minime": "^1.0.2"
+  }
+}
