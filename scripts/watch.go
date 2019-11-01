@@ -23,8 +23,8 @@ func main() {
         log.Fatal(err)
     }
 
-    const ContribTokenAddress string = "0x682391Bd5839a1b49079C555658dB77028b7F1e1"
-    const CurrencyTokenAddress string = "0x605c885A40600c9647587Fe8B1EdFB578F7d6A9b"
+    const ContribTokenAddress string = "0x44238B5B42a7994dfa2386Bf266563Fcb4E1f472"
+    const CurrencyTokenAddress string = "0x7a52A5c0b42B41c251742b8EEF020d0bc853Eceb"
 
     fmt.Println("we have a connection")
 
