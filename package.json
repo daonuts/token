@@ -14,8 +14,11 @@
   "author": "",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@aragon/os": "^4.3.0",
-		"@aragon/apps-shared-minime": "^1.0.2",
-		"@aragon/cli": "^6.3.3"
+    "@aragon/apps-shared-minime": "^1.0.2",
+    "@aragon/cli": "^6.3.3",
+    "@aragon/os": "^4.3.0"
+  },
+  "devDependencies": {
+    "@aragon/test-helpers": "^2.1.0"
   }
 }

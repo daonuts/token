@@ -123,9 +123,10 @@ contract Token is Controlled {
      */
     function transferFrom(address from, address to, uint256 value) public transferable returns (bool) {
         _transfer(from, to, value);
-        if(msg.sender != controller) {
+        /* if(msg.sender != controller) {
           _approve(from, msg.sender, _allowed[from][msg.sender].sub(value));
-        }
+        } */
+        _approve(from, msg.sender, _allowed[from][msg.sender].sub(value));
         return true;
     }
 

@@ -60,6 +60,15 @@ contract('Token', (accounts) => {
       assert.equal(allowed2, 1);
     });
 
+    it('controller cannot transferFrom without allowance', async () => {
+      let moveAmount = 5000;
+      await token.generateTokens(accounts[1], amount)
+
+      return assertRevert(async () => {
+        await token.transferFrom(accounts[1], accounts[2], moveAmount)
+      })
+    });
+
   })
 
   context('non-transferable token', async () => {
