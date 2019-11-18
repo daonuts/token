@@ -20,9 +20,8 @@ contract Token is Controlled {
     string public symbol;
     bool public transfersEnabled;
 
-    string private constant ERROR_TRANSFERS_DISABLED = "ERROR_TRANSFERS_DISABLED";
-    string private constant ERROR_TOKEN = "TOKEN";
-    string private constant ERROR_PERMISSION = "PERMISSION";
+    string private constant ERROR_NULL_ADDRESS = "NULL_ADDRESS_REJECTED";
+    string private constant ERROR_CONTROLLER = "CONTROLLER_REJECTED";
 
     event Transfer(address indexed _from, address indexed _to, uint256 _amount);
     event Approval(address indexed _owner, address indexed _spender, uint256 _amount);
@@ -38,15 +37,15 @@ contract Token is Controlled {
     ///  set to 0, then the `proxyPayment` method is called which relays the
     ///  ether and creates tokens as described in the token controller contract
     function () external payable {
-        require(isContract(controller), ERROR_PERMISSION);
-        require(ITokenController(controller).proxyPayment.value(msg.value)(msg.sender) == true, ERROR_TOKEN);
+        require(isContract(controller), "CONTROLLER_IS_NOT_CONTRACT");
+        require(ITokenController(controller).proxyPayment.value(msg.value)(msg.sender) == true, ERROR_CONTROLLER);
     }
 
     /**
      * @dev Modifier to make a function callable only when caller is controller or transfers are enabled.
      */
     modifier transferable() {
-        require(msg.sender == controller || transfersEnabled, ERROR_TRANSFERS_DISABLED);
+        require(msg.sender == controller || transfersEnabled, "NON_TRANSFERABLE");
         _;
     }
 
@@ -145,6 +144,42 @@ contract Token is Controlled {
     }
 
     /**
+     * @dev Atomically increases the allowance granted to `spender` by the caller.
+     *
+     * This is an alternative to {approve} that can be used as a mitigation for
+     * problems described in {IERC20-approve}.
+     *
+     * Emits an {Approval} event indicating the updated allowance.
+     *
+     * Requirements:
+     *
+     * - `spender` cannot be the zero address.
+     */
+    function increaseAllowance(address spender, uint256 addedValue) public transferable returns (bool) {
+        _approve(msg.sender, spender, _allowed[msg.sender][spender].add(addedValue));
+        return true;
+    }
+
+    /**
+     * @dev Atomically decreases the allowance granted to `spender` by the caller.
+     *
+     * This is an alternative to {approve} that can be used as a mitigation for
+     * problems described in {IERC20-approve}.
+     *
+     * Emits an {Approval} event indicating the updated allowance.
+     *
+     * Requirements:
+     *
+     * - `spender` cannot be the zero address.
+     * - `spender` must have allowance for the caller of at least
+     * `subtractedValue`.
+     */
+    function decreaseAllowance(address spender, uint256 subtractedValue) public transferable returns (bool) {
+        _approve(msg.sender, spender, _allowed[msg.sender][spender].sub(subtractedValue));
+        return true;
+    }
+
+    /**
      * @dev Transfer token for a specified addresses
      * @param _from The address to transfer from.
      * @param _to The address to transfer to.
@@ -153,10 +188,10 @@ contract Token is Controlled {
     function _transfer(address _from, address _to, uint256 _amount) internal {
         // Alerts the token controller of the transfer
         if (isContract(controller)) {
-            require(ITokenController(controller).onTransfer(_from, _to, _amount) == true, ERROR_TOKEN);
+            require(ITokenController(controller).onTransfer(_from, _to, _amount) == true, ERROR_CONTROLLER);
         }
 
-        require(_to != address(0), ERROR_PERMISSION);
+        require(_to != address(0), ERROR_NULL_ADDRESS);
 
         _balances[_from] = _balances[_from].sub(_amount);
         _balances[_to] = _balances[_to].add(_amount);
@@ -172,11 +207,11 @@ contract Token is Controlled {
     function _approve(address _owner, address _spender, uint256 _amount) internal {
         // Alerts the token controller of the approve function call
         if (isContract(controller)) {
-            require(ITokenController(controller).onApprove(_owner, _spender, _amount) == true, ERROR_TOKEN);
+            require(ITokenController(controller).onApprove(_owner, _spender, _amount) == true, ERROR_CONTROLLER);
         }
 
-        require(_spender != address(0), ERROR_PERMISSION);
-        require(_owner != address(0), ERROR_PERMISSION);
+        require(_spender != address(0), ERROR_NULL_ADDRESS);
+        require(_owner != address(0), ERROR_NULL_ADDRESS);
 
         _allowed[_owner][_spender] = _amount;
         emit Approval(_owner, _spender, _amount);
@@ -190,7 +225,7 @@ contract Token is Controlled {
      * @param value The amount that will be created.
      */
     function _mint(address account, uint256 value) internal {
-        require(account != address(0), ERROR_PERMISSION);
+        require(account != address(0), ERROR_NULL_ADDRESS);
 
         _totalSupply = _totalSupply.add(value);
         _balances[account] = _balances[account].add(value);
@@ -204,7 +239,7 @@ contract Token is Controlled {
      * @param value The amount that will be burnt.
      */
     function _burn(address account, uint256 value) internal {
-        require(account != address(0), ERROR_PERMISSION);
+        require(account != address(0), ERROR_NULL_ADDRESS);
 
         _totalSupply = _totalSupply.sub(value);
         _balances[account] = _balances[account].sub(value);
