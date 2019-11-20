@@ -1,4 +1,5 @@
 const Token = artifacts.require("Token");
+const Recipient = artifacts.require("Recipient")
 const { assertRevert } = require('@aragon/test-helpers/assertThrow')
 
 contract('Token', (accounts) => {
@@ -67,6 +68,19 @@ contract('Token', (accounts) => {
       return assertRevert(async () => {
         await token.transferFrom(accounts[1], accounts[2], moveAmount)
       })
+    });
+
+    it('send', async () => {
+      let moveAmount = 5000;
+      await token.generateTokens(accounts[0], amount)
+
+      let recipient = await Recipient.new()
+
+      await token.send(recipient.address, moveAmount, "0x")
+
+      let balance = await token.balanceOf(recipient.address)
+
+      assert.equal(balance.valueOf(), moveAmount, `${moveAmount} wasn't in the recipient account`);
     });
 
   })

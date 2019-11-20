@@ -5,6 +5,7 @@ pragma solidity ^0.4.24;
 import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
 import "@aragon/apps-shared-minime/contracts/ITokenController.sol";
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
+import "./IERC777Recipient.sol";
 
 pragma solidity ^0.4.24;
 
@@ -25,6 +26,10 @@ contract Token is Controlled {
 
     event Transfer(address indexed _from, address indexed _to, uint256 _amount);
     event Approval(address indexed _owner, address indexed _spender, uint256 _amount);
+    event Sent(
+      address indexed _operator, address indexed _from, address indexed _to,
+      uint256 _amount, bytes _data, bytes _operatorData
+    );
 
     constructor(string _name, uint8 _decimals, string _symbol, bool _transfersEnabled) public {
         name = _name;
@@ -177,6 +182,18 @@ contract Token is Controlled {
     function decreaseAllowance(address spender, uint256 subtractedValue) public transferable returns (bool) {
         _approve(msg.sender, spender, _allowed[msg.sender][spender].sub(subtractedValue));
         return true;
+    }
+
+    /**
+     * @dev See {IERC777-send}.
+     *
+     * Also emits a {Transfer} event for ERC20 compatibility.
+     */
+    function send(address to, uint256 value, bytes data) external {
+        _transfer(msg.sender, to, value);
+        emit Sent(msg.sender, msg.sender, to, value, data, "");
+        if(isContract(to))
+          IERC777Recipient(to).tokensReceived(msg.sender, msg.sender, to, value, data, "");
     }
 
     /**
