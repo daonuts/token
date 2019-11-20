@@ -22,11 +22,11 @@ interface IERC777Recipient {
      * This function may revert to prevent the operation from being executed.
      */
     function tokensReceived(
-        address operator,
-        address from,
-        address to,
-        uint256 amount,
-        bytes userData,
-        bytes operatorData
+        address _operator,
+        address _from,
+        address _to,
+        uint256 _amount,
+        bytes _data,
+        bytes _operatorData
     ) external;
 }
