@@ -82,6 +82,7 @@ contract Token is Controlled {
 
     /**
      * @dev Function to mint tokens
+     * @notice Mint `_amount` tokens to `_to`
      * @param _to The address that will receive the minted tokens.
      * @param _amount The amount of tokens to mint.
      * @return A boolean that indicates if the operation was successful.
@@ -93,6 +94,7 @@ contract Token is Controlled {
 
     /**
      * @dev Burns a specific amount of tokens from the target address
+     * @notice Burn `_amount` tokens from `_from`
      * @param _from address The account whose tokens will be burned.
      * @param _amount uint256 The amount of token to be burned.
      */
@@ -109,6 +111,7 @@ contract Token is Controlled {
 
     /**
      * @dev Transfer token to a specified address
+     * @notice Transfer `value` tokens to `to`
      * @param to The address to transfer to.
      * @param value The amount to be transferred.
      */
@@ -121,6 +124,7 @@ contract Token is Controlled {
      * @dev Transfer tokens from one address to another.
      * Note that while this function emits an Approval event, this is not required as per the specification,
      * and other compliant implementations may not emit the event.
+     * @notice Transfer `value` tokens from `from` to `to`
      * @param from address The address which you want to send tokens from
      * @param to address The address which you want to transfer to
      * @param value uint256 the amount of tokens to be transferred
@@ -140,6 +144,7 @@ contract Token is Controlled {
      * and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this
      * race condition is to first reduce the spender's allowance to 0 and set the desired value afterwards:
      * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+     * @notice Approve `value` tokens to be spent by `sender`
      * @param spender The address which will spend the funds.
      * @param value The amount of tokens to be spent.
      */
@@ -150,6 +155,7 @@ contract Token is Controlled {
 
     /**
      * @dev Atomically increases the allowance granted to `spender` by the caller.
+     * @notice Increase allowance for `spender` by `addedValue`
      * @param spender The address which will spend the funds.
      * @param addedValue The increase in spendable amount.
      */
@@ -160,6 +166,7 @@ contract Token is Controlled {
 
     /**
      * @dev Atomically decreases the allowance granted to `spender` by the caller.
+     * @notice Decrease allowance for `spender` by `subtractedValue`
      * @param spender The address which will spend the funds.
      * @param subtractedValue The reduction in spendable amount.
      */
@@ -170,6 +177,7 @@ contract Token is Controlled {
 
     /**
      * @dev Send tokens+data to ERC777 recipient
+     * @notice Send `value` tokens to `to` with data:`data`
      * @param to The recipient address.
      * @param value The amount to be sent.
      * @param data The data to be passed along an erc777 compatible recipient contract.
