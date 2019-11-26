@@ -150,15 +150,8 @@ contract Token is Controlled {
 
     /**
      * @dev Atomically increases the allowance granted to `spender` by the caller.
-     *
-     * This is an alternative to {approve} that can be used as a mitigation for
-     * problems described in {IERC20-approve}.
-     *
-     * Emits an {Approval} event indicating the updated allowance.
-     *
-     * Requirements:
-     *
-     * - `spender` cannot be the zero address.
+     * @param spender The address which will spend the funds.
+     * @param addedValue The increase in spendable amount.
      */
     function increaseAllowance(address spender, uint256 addedValue) public transferable returns (bool) {
         _approve(msg.sender, spender, _allowed[msg.sender][spender].add(addedValue));
@@ -167,17 +160,8 @@ contract Token is Controlled {
 
     /**
      * @dev Atomically decreases the allowance granted to `spender` by the caller.
-     *
-     * This is an alternative to {approve} that can be used as a mitigation for
-     * problems described in {IERC20-approve}.
-     *
-     * Emits an {Approval} event indicating the updated allowance.
-     *
-     * Requirements:
-     *
-     * - `spender` cannot be the zero address.
-     * - `spender` must have allowance for the caller of at least
-     * `subtractedValue`.
+     * @param spender The address which will spend the funds.
+     * @param subtractedValue The reduction in spendable amount.
      */
     function decreaseAllowance(address spender, uint256 subtractedValue) public transferable returns (bool) {
         _approve(msg.sender, spender, _allowed[msg.sender][spender].sub(subtractedValue));
@@ -185,9 +169,10 @@ contract Token is Controlled {
     }
 
     /**
-     * @dev See {IERC777-send}.
-     *
-     * Also emits a {Transfer} event for ERC20 compatibility.
+     * @dev Send tokens+data to ERC777 recipient
+     * @param to The recipient address.
+     * @param value The amount to be sent.
+     * @param data The data to be passed along an erc777 compatible recipient contract.
      */
     function send(address to, uint256 value, bytes data) external {
         _transfer(msg.sender, to, value);
